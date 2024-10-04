@@ -33,15 +33,12 @@
 #include "core/authors.gen.h"
 #include "core/donors.gen.h"
 #include "core/license.gen.h"
-#include "core/os/time.h"
-#include "core/version.h"
+#include "core/redot_authors.gen.h"
 #include "editor/editor_string_names.h"
+#include "editor/gui/editor_version_button.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/item_list.h"
 #include "scene/resources/style_box.h"
-
-// The metadata key used to store and retrieve the version text to copy to the clipboard.
-const String EditorAbout::META_TEXT_TO_COPY = "text_to_copy";
 
 void EditorAbout::_notification(int p_what) {
 	switch (p_what) {
@@ -79,10 +76,6 @@ void EditorAbout::_license_tree_selected() {
 	TreeItem *selected = _tpl_tree->get_selected();
 	_tpl_text->scroll_to_line(0);
 	_tpl_text->set_text(selected->get_metadata(0));
-}
-
-void EditorAbout::_version_button_pressed() {
-	DisplayServer::get_singleton()->clipboard_set(version_btn->get_meta(META_TEXT_TO_COPY));
 }
 
 void EditorAbout::_item_with_website_selected(int p_id, ItemList *p_il) {
@@ -176,7 +169,7 @@ ScrollContainer *EditorAbout::_populate_list(const String &p_name, const List<St
 }
 
 EditorAbout::EditorAbout() {
-	set_title(TTR("Thanks from the Godot community!"));
+	set_title(TTR("Thanks from the Redot community!"));
 	set_hide_on_ok(true);
 
 	VBoxContainer *vbc = memnew(VBoxContainer);
@@ -198,30 +191,13 @@ EditorAbout::EditorAbout() {
 	Control *v_spacer = memnew(Control);
 	version_info_vbc->add_child(v_spacer);
 
-	version_btn = memnew(LinkButton);
-	String hash = String(VERSION_HASH);
-	if (hash.length() != 0) {
-		hash = " " + vformat("[%s]", hash.left(9));
-	}
-	version_btn->set_text(VERSION_FULL_NAME + hash);
-	// Set the text to copy in metadata as it slightly differs from the button's text.
-	version_btn->set_meta(META_TEXT_TO_COPY, "v" VERSION_FULL_BUILD + hash);
-	version_btn->set_underline_mode(LinkButton::UNDERLINE_MODE_ON_HOVER);
-	String build_date;
-	if (VERSION_TIMESTAMP > 0) {
-		build_date = Time::get_singleton()->get_datetime_string_from_unix_time(VERSION_TIMESTAMP, true) + " UTC";
-	} else {
-		build_date = TTR("(unknown)");
-	}
-	version_btn->set_tooltip_text(vformat(TTR("Git commit date: %s\nClick to copy the version number."), build_date));
-
-	version_btn->connect(SceneStringName(pressed), callable_mp(this, &EditorAbout::_version_button_pressed));
-	version_info_vbc->add_child(version_btn);
+	version_info_vbc->add_child(memnew(EditorVersionButton(EditorVersionButton::FORMAT_WITH_NAME_AND_BUILD)));
 
 	Label *about_text = memnew(Label);
 	about_text->set_v_size_flags(Control::SIZE_SHRINK_CENTER);
 	about_text->set_text(
-			String::utf8("\xc2\xa9 2014-present ") + TTR("Godot Engine contributors") + "." +
+			String::utf8("\xc2\xa9 2024-present ") + TTR("Redot Engine contributors") + "." +
+			String::utf8("\n\xc2\xa9 2014-present ") + TTR("Godot Engine contributors") + "." +
 			String::utf8("\n\xc2\xa9 2007-2014 Juan Linietsky, Ariel Manzur.\n"));
 	version_info_vbc->add_child(about_text);
 
@@ -243,14 +219,30 @@ EditorAbout::EditorAbout() {
 	dev_sections.push_back(TTR("Project Manager", "Job Title"));
 	dev_sections.push_back(TTR("Developers"));
 	const char *const *dev_src[] = {
+		REDOT_AUTHORS_FOUNDERS,
+		REDOT_AUTHORS_LEAD_DEVELOPERS,
+		REDOT_AUTHORS_PROJECT_MANAGERS,
+		REDOT_AUTHORS_DEVELOPERS,
+	};
+	tc->add_child(_populate_list(TTR("Authors"), dev_sections, dev_src, 0b1)); // First section (Project Founders) is always one column.
+
+	// Godot Authors.
+
+	List<String> godot_dev_sections;
+	godot_dev_sections.push_back(TTR("Project Founders"));
+	godot_dev_sections.push_back(TTR("Lead Developer"));
+	// TRANSLATORS: This refers to a job title.
+	godot_dev_sections.push_back(TTR("Project Manager", "Job Title"));
+	godot_dev_sections.push_back(TTR("Developers"));
+	const char *const *godot_dev_src[] = {
 		AUTHORS_FOUNDERS,
 		AUTHORS_LEAD_DEVELOPERS,
 		AUTHORS_PROJECT_MANAGERS,
 		AUTHORS_DEVELOPERS,
 	};
-	tc->add_child(_populate_list(TTR("Authors"), dev_sections, dev_src, 0b1)); // First section (Project Founders) is always one column.
+	tc->add_child(_populate_list(TTR("Godot Authors"), godot_dev_sections, godot_dev_src, 0b1)); // First section (Project Founders) is always one column.
 
-	// Donors.
+	// Godot Donors.
 
 	List<String> donor_sections;
 	donor_sections.push_back(TTR("Patrons"));
@@ -271,7 +263,7 @@ EditorAbout::EditorAbout() {
 		DONORS_MEMBERS_PLATINUM,
 		DONORS_MEMBERS_GOLD,
 	};
-	tc->add_child(_populate_list(TTR("Donors"), donor_sections, donor_src, 0b1, true)); // First section (Patron) is one column.
+	tc->add_child(_populate_list(TTR("Godot Donors"), donor_sections, donor_src, 0b1, true)); // First section (Patron) is one column.
 
 	// License.
 
@@ -293,7 +285,7 @@ EditorAbout::EditorAbout() {
 	Label *tpl_label = memnew(Label);
 	tpl_label->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	tpl_label->set_autowrap_mode(TextServer::AUTOWRAP_WORD_SMART);
-	tpl_label->set_text(TTR("Godot Engine relies on a number of third-party free and open source libraries, all compatible with the terms of its MIT license. The following is an exhaustive list of all such third-party components with their respective copyright statements and license terms."));
+	tpl_label->set_text(TTR("Redot Engine relies on a number of third-party free and open source libraries, all compatible with the terms of its MIT license. The following is an exhaustive list of all such third-party components with their respective copyright statements and license terms."));
 	tpl_label->set_size(Size2(630, 1) * EDSCALE);
 	license_thirdparty->add_child(tpl_label);
 

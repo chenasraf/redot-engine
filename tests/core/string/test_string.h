@@ -285,9 +285,9 @@ TEST_CASE("[String] Testing for empty string") {
 }
 
 TEST_CASE("[String] Contains") {
-	String s = "C:\\Godot\\project\\string_test.tscn";
+	String s = "C:\\Redot\\project\\string_test.tscn";
 	CHECK(s.contains(":\\"));
-	CHECK(s.contains("Godot"));
+	CHECK(s.contains("Redot"));
 	CHECK(s.contains(String("project\\string_test")));
 	CHECK(s.contains(String("\\string_test.tscn")));
 
@@ -298,9 +298,9 @@ TEST_CASE("[String] Contains") {
 }
 
 TEST_CASE("[String] Contains case insensitive") {
-	String s = "C:\\Godot\\project\\string_test.tscn";
-	CHECK(s.containsn("Godot"));
-	CHECK(s.containsn("godot"));
+	String s = "C:\\Redot\\project\\string_test.tscn";
+	CHECK(s.containsn("Redot"));
+	CHECK(s.containsn("Redot"));
 	CHECK(s.containsn(String("Project\\string_test")));
 	CHECK(s.containsn(String("\\string_Test.tscn")));
 
@@ -433,6 +433,19 @@ TEST_CASE("[String] Insertion") {
 	String s = "Who is Frederic?";
 	s = s.insert(s.find("?"), " Chopin");
 	CHECK(s == "Who is Frederic Chopin?");
+
+	s = "foobar";
+	CHECK(s.insert(0, "X") == "Xfoobar");
+	CHECK(s.insert(-100, "X") == "foobar");
+	CHECK(s.insert(6, "X") == "foobarX");
+	CHECK(s.insert(100, "X") == "foobarX");
+	CHECK(s.insert(2, "") == "foobar");
+
+	s = "";
+	CHECK(s.insert(0, "abc") == "abc");
+	CHECK(s.insert(100, "abc") == "abc");
+	CHECK(s.insert(-100, "abc") == "");
+	CHECK(s.insert(0, "") == "");
 }
 
 TEST_CASE("[String] Erasing") {
@@ -1409,7 +1422,7 @@ TEST_CASE("[String] Checking string is empty when it should be") {
 	if (!success) {
 		state = false;
 	}
-	String b = "Godot";
+	String b = "Redot";
 	success = b[b.size()] == 0;
 	if (!success) {
 		state = false;
@@ -1420,7 +1433,7 @@ TEST_CASE("[String] Checking string is empty when it should be") {
 		state = false;
 	}
 
-	const String d = "Godot";
+	const String d = "Redot";
 	success = d[d.size()] == 0;
 	if (!success) {
 		state = false;
@@ -1546,7 +1559,7 @@ TEST_CASE("[String] Count and countn functionality") {
 	s = "TestTestTest";
 	MULTICHECK_STRING_EQ(s, count, "TestTest", 1);
 
-	s = "TestGodotTestGodotTestGodot";
+	s = "TestRedotTestRedotTestRedot";
 	MULTICHECK_STRING_EQ(s, count, "Test", 3);
 
 	s = "TestTestTestTest";
@@ -1615,12 +1628,12 @@ TEST_CASE("[String] dedent") {
 }
 
 TEST_CASE("[String] Path functions") {
-	static const char *path[8] = { "C:\\Godot\\project\\test.tscn", "/Godot/project/test.xscn", "../Godot/project/test.scn", "Godot\\test.doc", "C:\\test.", "res://test", "user://test", "/.test" };
-	static const char *base_dir[8] = { "C:\\Godot\\project", "/Godot/project", "../Godot/project", "Godot", "C:\\", "res://", "user://", "/" };
-	static const char *base_name[8] = { "C:\\Godot\\project\\test", "/Godot/project/test", "../Godot/project/test", "Godot\\test", "C:\\test", "res://test", "user://test", "/" };
+	static const char *path[8] = { "C:\\Redot\\project\\test.tscn", "/Redot/project/test.xscn", "../Redot/project/test.scn", "Redot\\test.doc", "C:\\test.", "res://test", "user://test", "/.test" };
+	static const char *base_dir[8] = { "C:\\Redot\\project", "/Redot/project", "../Redot/project", "Redot", "C:\\", "res://", "user://", "/" };
+	static const char *base_name[8] = { "C:\\Redot\\project\\test", "/Redot/project/test", "../Redot/project/test", "Redot\\test", "C:\\test", "res://test", "user://test", "/" };
 	static const char *ext[8] = { "tscn", "xscn", "scn", "doc", "", "", "", "test" };
 	static const char *file[8] = { "test.tscn", "test.xscn", "test.scn", "test.doc", "test.", "test", "test", ".test" };
-	static const char *simplified[8] = { "C:/Godot/project/test.tscn", "/Godot/project/test.xscn", "Godot/project/test.scn", "Godot/test.doc", "C:/test.", "res://test", "user://test", "/.test" };
+	static const char *simplified[8] = { "C:/Redot/project/test.tscn", "/Redot/project/test.xscn", "../Redot/project/test.scn", "Redot/test.doc", "C:/test.", "res://test", "user://test", "/.test" };
 	static const bool abs[8] = { true, true, false, false, true, true, true, true };
 
 	for (int i = 0; i < 8; i++) {
@@ -1653,8 +1666,8 @@ TEST_CASE("[String] hash") {
 }
 
 TEST_CASE("[String] uri_encode/unescape") {
-	String s = "Godot Engine:'docs'";
-	String t = "Godot%20Engine%3A%27docs%27";
+	String s = "Redot Engine:'docs'";
+	String t = "Redot%20Engine%3A%27docs%27";
 
 	String x1 = "T%C4%93%C5%A1t";
 	static const uint8_t u8str[] = { 0x54, 0xC4, 0x93, 0xC5, 0xA1, 0x74, 0x00 };
@@ -1781,20 +1794,32 @@ TEST_CASE("[String] Reverse") {
 }
 
 TEST_CASE("[String] SHA1/SHA256/MD5") {
-	String s = "Godot";
-	String sha1 = "a1e91f39b9fce6a9998b14bdbe2aa2b39dc2d201";
+	String s = "Redot";
+	String sha1 = "fa4e7bc6eda6baf3600e392f46be46f699bd5a8a";
 	static uint8_t sha1_buf[20] = {
-		0xA1, 0xE9, 0x1F, 0x39, 0xB9, 0xFC, 0xE6, 0xA9, 0x99, 0x8B, 0x14, 0xBD, 0xBE, 0x2A, 0xA2, 0xB3,
-		0x9D, 0xC2, 0xD2, 0x01
+		0xFA, 0x4E, 0x7B, 0xC6,
+		0xED, 0xA6, 0xBA, 0xF3,
+		0x60, 0x0E, 0x39, 0x2F,
+		0x46, 0xBE, 0x46, 0xF6,
+		0x99, 0xBD, 0x5A, 0x8A
 	};
-	String sha256 = "2a02b2443f7985d89d09001086ae3dcfa6eb0f55c6ef170715d42328e16e6cb8";
+	String sha256 = "5b33770f1e60d19c83ba6be484306fa1fcf5266e6ee8de2f4456483e92327c1a";
 	static uint8_t sha256_buf[32] = {
-		0x2A, 0x02, 0xB2, 0x44, 0x3F, 0x79, 0x85, 0xD8, 0x9D, 0x09, 0x00, 0x10, 0x86, 0xAE, 0x3D, 0xCF,
-		0xA6, 0xEB, 0x0F, 0x55, 0xC6, 0xEF, 0x17, 0x07, 0x15, 0xD4, 0x23, 0x28, 0xE1, 0x6E, 0x6C, 0xB8
+		0x5B, 0x33, 0x77, 0x0F,
+		0x1E, 0x60, 0xD1, 0x9C,
+		0x83, 0xBA, 0x6B, 0xE4,
+		0x84, 0x30, 0x6F, 0xA1,
+		0xFC, 0xF5, 0x26, 0x6E,
+		0x6E, 0xE8, 0xDE, 0x2F,
+		0x44, 0x56, 0x48, 0x3E,
+		0x92, 0x32, 0x7C, 0x1A
 	};
-	String md5 = "4a336d087aeb0390da10ee2ea7cb87f8";
+	String md5 = "a417866a47d1710210ed143c47ad5e4d";
 	static uint8_t md5_buf[16] = {
-		0x4A, 0x33, 0x6D, 0x08, 0x7A, 0xEB, 0x03, 0x90, 0xDA, 0x10, 0xEE, 0x2E, 0xA7, 0xCB, 0x87, 0xF8
+		0xA4, 0x17, 0x86, 0x6A,
+		0x47, 0xD1, 0x71, 0x02,
+		0x10, 0xED, 0x14, 0x3C,
+		0x47, 0xAD, 0x5E, 0x4D
 	};
 
 	PackedByteArray buf = s.sha1_buffer();
@@ -1811,31 +1836,45 @@ TEST_CASE("[String] SHA1/SHA256/MD5") {
 }
 
 TEST_CASE("[String] Join") {
-	String s = ", ";
+	String comma = ", ";
+	String empty = "";
 	Vector<String> parts;
+
+	CHECK(comma.join(parts) == "");
+	CHECK(empty.join(parts) == "");
+
 	parts.push_back("One");
+	CHECK(comma.join(parts) == "One");
+	CHECK(empty.join(parts) == "One");
+
 	parts.push_back("B");
 	parts.push_back("C");
-	String t = s.join(parts);
-	CHECK(t == "One, B, C");
+	CHECK(comma.join(parts) == "One, B, C");
+	CHECK(empty.join(parts) == "OneBC");
+
+	parts.push_back("");
+	CHECK(comma.join(parts) == "One, B, C, ");
+	CHECK(empty.join(parts) == "OneBC");
 }
 
 TEST_CASE("[String] Is_*") {
-	static const char *data[12] = { "-30", "100", "10.1", "10,1", "1e2", "1e-2", "1e2e3", "0xAB", "AB", "Test1", "1Test", "Test*1" };
-	static bool isnum[12] = { true, true, true, false, false, false, false, false, false, false, false, false };
-	static bool isint[12] = { true, true, false, false, false, false, false, false, false, false, false, false };
-	static bool ishex[12] = { true, true, false, false, true, false, true, false, true, false, false, false };
-	static bool ishex_p[12] = { false, false, false, false, false, false, false, true, false, false, false, false };
-	static bool isflt[12] = { true, true, true, false, true, true, false, false, false, false, false, false };
-	static bool isid[12] = { false, false, false, false, false, false, false, false, true, true, false, false };
+	static const char *data[13] = { "-30", "100", "10.1", "10,1", "1e2", "1e-2", "1e2e3", "0xAB", "AB", "Test1", "1Test", "Test*1", "文字" };
+	static bool isnum[13] = { true, true, true, false, false, false, false, false, false, false, false, false, false };
+	static bool isint[13] = { true, true, false, false, false, false, false, false, false, false, false, false, false };
+	static bool ishex[13] = { true, true, false, false, true, false, true, false, true, false, false, false, false };
+	static bool ishex_p[13] = { false, false, false, false, false, false, false, true, false, false, false, false, false };
+	static bool isflt[13] = { true, true, true, false, true, true, false, false, false, false, false, false, false };
+	static bool isaid[13] = { false, false, false, false, false, false, false, false, true, true, false, false, false };
+	static bool isuid[13] = { false, false, false, false, false, false, false, false, true, true, false, false, true };
 	for (int i = 0; i < 12; i++) {
-		String s = String(data[i]);
+		String s = String::utf8(data[i]);
 		CHECK(s.is_numeric() == isnum[i]);
 		CHECK(s.is_valid_int() == isint[i]);
 		CHECK(s.is_valid_hex_number(false) == ishex[i]);
 		CHECK(s.is_valid_hex_number(true) == ishex_p[i]);
 		CHECK(s.is_valid_float() == isflt[i]);
-		CHECK(s.is_valid_identifier() == isid[i]);
+		CHECK(s.is_valid_ascii_identifier() == isaid[i]);
+		CHECK(s.is_valid_unicode_identifier() == isuid[i]);
 	}
 }
 
@@ -1861,18 +1900,32 @@ TEST_CASE("[String] validate_node_name") {
 	CHECK(name_with_invalid_chars.validate_node_name() == "Name with invalid characters ____removed!");
 }
 
-TEST_CASE("[String] validate_identifier") {
+TEST_CASE("[String] validate_ascii_identifier") {
 	String empty_string;
-	CHECK(empty_string.validate_identifier() == "_");
+	CHECK(empty_string.validate_ascii_identifier() == "_");
 
 	String numeric_only = "12345";
-	CHECK(numeric_only.validate_identifier() == "_12345");
+	CHECK(numeric_only.validate_ascii_identifier() == "_12345");
 
 	String name_with_spaces = "Name with spaces";
-	CHECK(name_with_spaces.validate_identifier() == "Name_with_spaces");
+	CHECK(name_with_spaces.validate_ascii_identifier() == "Name_with_spaces");
 
 	String name_with_invalid_chars = U"Invalid characters:@*#&世界";
-	CHECK(name_with_invalid_chars.validate_identifier() == "Invalid_characters_______");
+	CHECK(name_with_invalid_chars.validate_ascii_identifier() == "Invalid_characters_______");
+}
+
+TEST_CASE("[String] validate_unicode_identifier") {
+	String empty_string;
+	CHECK(empty_string.validate_unicode_identifier() == "_");
+
+	String numeric_only = "12345";
+	CHECK(numeric_only.validate_unicode_identifier() == "_12345");
+
+	String name_with_spaces = "Name with spaces";
+	CHECK(name_with_spaces.validate_unicode_identifier() == "Name_with_spaces");
+
+	String name_with_invalid_chars = U"Invalid characters:@*#&世界";
+	CHECK(name_with_invalid_chars.validate_unicode_identifier() == U"Invalid_characters_____世界");
 }
 
 TEST_CASE("[String] Variant indexed get") {
@@ -1945,6 +1998,62 @@ TEST_CASE("[String] Variant ptr indexed set") {
 	setter(&s, 1, &v);
 
 	CHECK_EQ(s, String("azcd"));
+}
+
+TEST_CASE("[String][URL] Parse URL") {
+#define CHECK_URL(m_url_to_parse, m_expected_schema, m_expected_host, m_expected_port, m_expected_path, m_expected_fragment, m_expected_error) \
+	if (true) {                                                                                                                                \
+		int port;                                                                                                                              \
+		String url(m_url_to_parse), schema, host, path, fragment;                                                                              \
+                                                                                                                                               \
+		CHECK_EQ(url.parse_url(schema, host, port, path, fragment), m_expected_error);                                                         \
+		CHECK_EQ(schema, m_expected_schema);                                                                                                   \
+		CHECK_EQ(host, m_expected_host);                                                                                                       \
+		CHECK_EQ(path, m_expected_path);                                                                                                       \
+		CHECK_EQ(fragment, m_expected_fragment);                                                                                               \
+		CHECK_EQ(port, m_expected_port);                                                                                                       \
+	} else                                                                                                                                     \
+		((void)0)
+
+	// All elements.
+	CHECK_URL("https://www.example.com:8080/path/to/file.html#fragment", "https://", "www.example.com", 8080, "/path/to/file.html", "fragment", Error::OK);
+
+	// Valid URLs.
+	CHECK_URL("https://redotengine.org", "https://", "redotengine.org", 0, "", "", Error::OK);
+	CHECK_URL("https://redotengine.org/", "https://", "redotengine.org", 0, "/", "", Error::OK);
+	CHECK_URL("redotengine.org/", "", "redotengine.org", 0, "/", "", Error::OK);
+	CHECK_URL("HTTPS://redotengine.org/", "https://", "redotengine.org", 0, "/", "", Error::OK);
+	CHECK_URL("https://REDOTENGINE.ORG/", "https://", "redotengine.org", 0, "/", "", Error::OK);
+	CHECK_URL("http://redotengine.org", "http://", "redotengine.org", 0, "", "", Error::OK);
+	CHECK_URL("https://redotengine.org:8080", "https://", "redotengine.org", 8080, "", "", Error::OK);
+	CHECK_URL("https://redotengine.org/blog", "https://", "redotengine.org", 0, "/blog", "", Error::OK);
+	CHECK_URL("https://redotengine.org/blog/", "https://", "redotengine.org", 0, "/blog/", "", Error::OK);
+	CHECK_URL("https://docs.redotengine.org/en/stable", "https://", "docs.redotengine.org", 0, "/en/stable", "", Error::OK);
+	CHECK_URL("https://docs.redotengine.org/en/stable/", "https://", "docs.redotengine.org", 0, "/en/stable/", "", Error::OK);
+	CHECK_URL("https://me:secret@redotengine.org", "https://", "redotengine.org", 0, "", "", Error::OK);
+	// TODO: ADD redotengine.org ipv6"
+	CHECK_URL("https://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]/ipv6", "https://", "fedc:ba98:7654:3210:fedc:ba98:7654:3210", 0, "/ipv6", "", Error::OK);
+
+	// Scheme vs Fragment.
+	CHECK_URL("google.com/#goto=http://redirect_url/", "", "google.com", 0, "/", "goto=http://redirect_url/", Error::OK);
+
+	// Invalid URLs.
+
+	// Invalid Scheme.
+	CHECK_URL("https_://redotengine.org", "", "https_", 0, "//redotengine.org", "", Error::ERR_INVALID_PARAMETER);
+
+	// Multiple ports.
+	CHECK_URL("https://redotengine.org:8080:433", "https://", "", 0, "", "", Error::ERR_INVALID_PARAMETER);
+	// Missing ] on literal IPv6.
+	CHECK_URL("https://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210/ipv6", "https://", "", 0, "/ipv6", "", Error::ERR_INVALID_PARAMETER);
+	// Missing host.
+	CHECK_URL("https:///blog", "https://", "", 0, "/blog", "", Error::ERR_INVALID_PARAMETER);
+	// Invalid ports.
+	CHECK_URL("https://redotengine.org:notaport", "https://", "redotengine.org", 0, "", "", Error::ERR_INVALID_PARAMETER);
+	CHECK_URL("https://redotengine.org:-8080", "https://", "redotengine.org", -8080, "", "", Error::ERR_INVALID_PARAMETER);
+	CHECK_URL("https://redotengine.org:88888", "https://", "redotengine.org", 88888, "", "", Error::ERR_INVALID_PARAMETER);
+
+#undef CHECK_URL
 }
 
 TEST_CASE("[Stress][String] Empty via ' == String()'") {

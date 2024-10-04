@@ -309,7 +309,7 @@ RasterizerGLES3::RasterizerGLES3() {
 			}
 
 			if (callback) {
-				print_line("godot: ENABLING GL DEBUG");
+				print_line("redot: ENABLING GL DEBUG");
 				glEnable(_EXT_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 				callback((DEBUGPROCARB)_gl_debug_print, nullptr);
 				glEnable(_EXT_DEBUG_OUTPUT);
@@ -349,9 +349,6 @@ RasterizerGLES3::RasterizerGLES3() {
 		}
 	}
 
-	// Disable OpenGL linear to sRGB conversion, because Godot will always do this conversion itself.
-	glDisable(GL_FRAMEBUFFER_SRGB);
-
 	// OpenGL needs to be initialized before initializing the Rasterizers
 	config = memnew(GLES3::Config);
 	utilities = memnew(GLES3::Utilities);
@@ -368,6 +365,11 @@ RasterizerGLES3::RasterizerGLES3() {
 	fog = memnew(GLES3::Fog);
 	canvas = memnew(RasterizerCanvasGLES3());
 	scene = memnew(RasterizerSceneGLES3());
+
+	// Disable OpenGL linear to sRGB conversion, because Redot will always do this conversion itself.
+	if (config->srgb_framebuffer_supported) {
+		glDisable(GL_FRAMEBUFFER_SRGB);
+	}
 }
 
 RasterizerGLES3::~RasterizerGLES3() {
