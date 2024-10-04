@@ -234,7 +234,7 @@ open class GodotEditor : GodotActivity() {
 		for (runningProcess in runningProcesses) {
 			if (runningProcess.processName == processName) {
 				// Killing process directly
-				Log.v(TAG, "Killing Godot process ${runningProcess.processName}")
+				Log.v(TAG, "Killing Redot process ${runningProcess.processName}")
 				Process.killProcess(runningProcess.pid)
 				return true
 			}
