@@ -9,6 +9,7 @@ env_squish = env_modules.Clone()
 
 thirdparty_obj = []
 
+env["builtin_squish"] = env.get("builtin_squish", True)
 if env["builtin_squish"]:
     thirdparty_dir = "#thirdparty/squish/"
     thirdparty_sources = [
